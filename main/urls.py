@@ -15,13 +15,20 @@ Including another URLconf
 """
 from django.urls import path
 from . import views
+import sys
+
+
 
 app_name = "main"
 
 urlpatterns = [
     path("", views.homepage, name="homepage"),
+    path("blog/", views.blog, name="blog"),
+    path("cv/", views.cv, name="cv"),
+    path("contact/", views.contact, name="contact"),
     path("register/", views.register, name="register"),
     path("logout/", views.logout_request, name="logout"),
     path("login/", views.login_request, name="login"),
-    path("<single_slug>", views.single_slug, name="single_slug"),
+    path("<single_slug>/", views.single_slug, name="single_slug"),
+    path("blog/<single_slug>", views.single_slug, name="single_slug"),
 ]

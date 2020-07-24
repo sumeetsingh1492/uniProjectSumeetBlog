@@ -1,0 +1,31 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+<p>You can get in touch in various ways, such as contact form, email or telephone.</p>
+<ul class="collapsible">
+    <li>
+      <div class="collapsible-header"><i class="material-icons">text_snippet</i>Contact Form</div>
+      <div class="collapsible-body"><span>
+        <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit"/>
+        </form></span>
+        </div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">alternate_email</i>Email</div>
+      <div class="collapsible-body"><span>
+        <p>I will aim to repsond to your enquiry within 24 hours of receipt of your email:</p>
+        <a href="mailto:sumeetsingh@sumeet's.co.uk">sumeetsingh@sumeet's.co.uk</a>
+      </span></div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">phone</i>Telephone</div>
+      <div class="collapsible-body"><span>
+        <p>My office hours are 8:00am - 7:00pm Monday to Friday.</p>
+        <a href="tel:0044123-456-7890">+44123-456-7890</a>
+      </span></div>
+    </li>
+  </ul>   
+{% endblock %}

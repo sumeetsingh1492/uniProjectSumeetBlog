@@ -1,19 +1,61 @@
 {% extends 'main/header.html' %}
 
 {% block content %}
-
+    
     <div class="row">
-        {% for cat in categories %}
-            <div class="col s12 m6 l4">
-                <a href="{{cat.category_slug}}", style="color:#000">
-                    <div class="card hoverable">
-                        <div class="card-content">
-                            <div class="card-title">{{cat.blog_category}}</div>
-                            <p>{{cat.category_summary}}</p>
+        <!-- Switch -->
+        <span>Categorize</span>
+        <div class="switch">
+            <label>
+            Off
+            <input type="checkbox" id="categories-toggle">
+            <span class="lever"></span>
+            On
+            </label>
+        </div>
+        <div id="toggled-content">
+            <h3>My Blog Categories</h3>
+            {% for cat in categories %}
+                <div class="col s12 m6 l4">
+                    <a href="{{cat.category_slug}}", style="color:#000">
+                        <div class="card hoverable">
+                            <div class="card-content">
+                                <div class="card-title">{{cat.blog_category}}</div>
+                                <p>{{cat.category_summary}}</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-        {% endfor %}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="not-toggled-content">
+            <h2>My Blog</h2>
+            {% for tut in posts %}
+                <div class="col s12, m8, l8">
+                <div class="divider"></div>
+                    <h4><a href="/{{tut.blog_slug}}">{{ tut.blog_title }}</a></h3>
+                    <p style="font-size:70%">Published {{tut.blog_published}}</p>
+                    {{tut.blog_content|truncatechars:500|safe}}
+                    <h6><a href="/{{tut.blog_slug}}">Read more...</a></h3>
+                </div>
+                <div class="divider"></div>
+            {% endfor %}
+        </div>
     </div>
+    <script>
+        var categoryBlock = document.getElementById("toggled-content");
+        var postBlock = document.getElementById("not-toggled-content");
+        document.getElementById("categories-toggle").checked = false;
+        categoryBlock.style.display = "none";
+        postBlock.style.display = "block";
+		document.getElementById("categories-toggle").onclick = function() {
+            if (this.checked) {
+                categoryBlock.style.display = "block";
+                postBlock.style.display = "none";
+            }else{
+                categoryBlock.style.display = "none";
+                postBlock.style.display = "block";
+            }
+            }
+	</script>
 {% endblock %}

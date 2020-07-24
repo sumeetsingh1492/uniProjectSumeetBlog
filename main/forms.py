@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Comment
+from django import forms
 
 
 class NewUserForm(UserCreationForm):
@@ -16,3 +18,16 @@ class NewUserForm(UserCreationForm):
 		if commit:
 			user.save()
 		return user
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('body',)
+
+class ContactForm(forms.Form):
+    name= forms.CharField(max_length=500, label="Name")
+    email= forms.EmailField(max_length=500, label="Email")
+    comment= forms.CharField(label='',widget=forms.Textarea(
+                        attrs={'placeholder': 'Enter your comment here'}))
+        
+        

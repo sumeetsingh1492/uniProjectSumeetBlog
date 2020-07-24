@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import Blog, BlogCategory, BlogSeries
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from .models import Blog, BlogCategory, BlogSeries, Comment
+from .forms import CommentForm, ContactForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .forms import NewUserForm
+from django.contrib.auth.models import User
+import requests
+import socket
+from django.utils import timezone
 
 
 def single_slug(request, single_slug):
@@ -29,23 +34,87 @@ def single_slug(request, single_slug):
         blogs_from_series = Blog.objects.filter(blog_series__blog_series=this_blog.blog_series).order_by('blog_published')
         this_blog_idx = list(blogs_from_series).index(this_blog)
 
+        comments = Comment.objects.filter(post=this_blog)#Comment.objects.all()
+        new_comment = None
+        # Comment posted
+        if request.method == 'POST':
+            comment_form = CommentForm(data=request.POST)
+            if comment_form.is_valid():
+                # Create Comment object but don't save to database yet
+                new_comment = comment_form.save(commit=False)
+                # Assign the current post to the comment
+                new_comment.name = request.user.username
+                new_comment.email = request.user.email
+                new_comment.post = this_blog
+                # Save the comment to the database
+                new_comment.save()        
+                messages.info(request,"Comment submitted successfully")
+                return HttpResponseRedirect("/"+single_slug+"/")
+
+        else:
+            comment_form = CommentForm()
+
         return render(request=request,
                       template_name='main/blog_detail.html',
                       context={"blog":this_blog,
                                "sidebar": blogs_from_series,
-                               "this_tut_idx": this_blog_idx})
+                               "this_tut_idx": this_blog_idx,
+                               "comments": comments,
+                               "new_comment": new_comment,
+                               "comment_form": comment_form})
 
-    #return HttpResponse(f"'{single_slug}' does not correspond to anything we know of!")
-    if single_slug == "admin":
-    	return redirect('/admin/')
+    pages_check = ['login', 'register','admin','blog','cv','account','contact']
+    if single_slug in pages_check:
+        return redirect(f"main:{single_slug}")
+    elif single_slug == "logout":
+        logout_request(request)
+        return redirect("main:homepage")
     else:
-    	return HttpResponse("PAGE NOT FOUND")
+        return HttpResponse("PAGE NOT FOUND")
+
+
+
+
 
 
 def homepage(request):
+    truncate_to = 5
+    blogs_list = (Blog.objects.order_by('-blog_published'))[:truncate_to]
+
+    return render(request=request,
+                  template_name='main/home.html',
+                  context={"blogs": blogs_list})
+def blog(request):
     return render(request=request,
                   template_name='main/categories.html',
-                  context={"categories": BlogCategory.objects.all})
+                  context={"categories": BlogCategory.objects.all,
+                           "posts": Blog.objects.order_by('-blog_published')})
+
+def cv(request):
+    return render(request=request,
+                  template_name='main/portfolio.html')
+def contact(request):
+    name=''
+    email=''
+    comment=''
+
+    form= ContactForm(request.POST or None)
+    
+
+    if request.user.is_authenticated:
+        subject= str(request.user)
+    else:
+        subject= "Visitor"
+    if request.method == 'POST':
+        comment= "Message sent as "+subject
+        messages.info(request,comment)
+        return HttpResponseRedirect("/contact/")
+    
+    context= {'form': form}
+    return render(request, 'main/contact.html', context)
+
+    
+    
 
 def register(request):
 	if request.method == "POST":
@@ -71,6 +140,7 @@ def logout_request(request):
 	logout(request)
 	messages.info(request, "Logged out successfully!")
 	return redirect("main:homepage")
+
 
 def login_request(request):
 	if request.method == "POST":

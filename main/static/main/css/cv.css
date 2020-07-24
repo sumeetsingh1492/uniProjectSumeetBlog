@@ -1,0 +1,51 @@
+.container {
+  width: 85%;
+  padding: 20px;
+}
+
+
+        
+.collapsible {
+  width: 400px;
+}
+.grey-text{
+	font-size: 28;
+}
+
+h2{
+	color: teal;
+	text-align: center;
+}
+
+#profile-tab-parallax {
+  height: 250px;
+}
+#experience-tab-parallax {
+  height: 120px;
+  /*border: 10px solid #D3D3D3;*/
+}
+#overlay-heading {
+  margin: auto;
+  margin-top: 20px;
+  text-align: center;
+  width: 50%;
+}
+#overlay-text {
+  margin: auto;
+  text-align: center;
+  width: 95%;
+}
+#overlay-heading h2 {
+  font-size: 50px;
+  font-family: Calibri;
+  color: white;
+  font-weight: 700;
+  line-height: 1.25em;
+  margin-top: 0;
+  text-align: center;
+}
+    
+
+
+
+

@@ -1,7 +1,6 @@
 {% extends 'main/header.html' %}
 
 {% block content %}
-
     <div class="row">
 
         <div class="col s12, m8, l8">
@@ -10,7 +9,7 @@
             {{blog.blog_content|safe}}
         </div>
 
-        <div class="col s12 m4 l4">
+        <div class="col s12 m12 l4">
             <ul class="collapsible popout">
                 {% for blog in sidebar %}
                     {% if forloop.counter0 == this_tut_idx %}
@@ -29,7 +28,36 @@
                 {% endfor %}
             </ul>
         </div>
+        {% if user.is_authenticated %}
+        <div class="col s12, m12, l12 ">
+          <div class="card-body">
+            <h4>Leave a comment</h4>
+            <form method="post" style="margin-top: 1.3em;">
+              {{ comment_form.as_p }}
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+            </form>
+          </div>
+        </div>
+        {% else %}
+        <div class="col s12, m12, l12 ">
+          <a href="/login"><h4>Login to leave a comment</h4></a>
+        </div>
 
-    </div>
-
+        {% endif %}
+        <div class="col s12, m12, l12 ">
+              <!-- comments -->
+              <h4>{{ comments.count }} comments</h4>
+              {% for comment in comments %}
+              <div class="comments" style="padding: 10px;">
+                <p class="font-weight-bold">
+                  {{ comment.name }}
+                  <span class=" text-muted font-weight-normal">
+                    {{ comment.created_on }}
+                  </span>
+                </p>
+                {{ comment.body | linebreaks }}
+              </div>
+              {% endfor %}
+          </div>
 {% endblock %}

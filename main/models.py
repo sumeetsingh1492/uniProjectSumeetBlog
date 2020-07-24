@@ -38,3 +38,16 @@ class Blog(models.Model):
 	def __str__(self):
 		return self.blog_title
 
+class Comment(models.Model):
+    post = models.ForeignKey(Blog, default=1, verbose_name="Blog", on_delete=models.SET_DEFAULT)
+    name = models.CharField(max_length=80)
+    email = models.EmailField()
+    body = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['created_on']
+
+    def __str__(self):
+        return 'Comment {} by {}'.format(self.body, self.name)

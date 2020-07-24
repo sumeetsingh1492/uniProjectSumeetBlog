@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Blog, BlogSeries, BlogCategory
+from .models import Blog, BlogSeries, BlogCategory, Comment
 from tinymce.widgets import TinyMCE
 from django.db import models
 
@@ -16,6 +16,16 @@ class BlogAdmin(admin.ModelAdmin):
 		models.TextField: {'widget': TinyMCE()}
 	}
 
+#Tried using a decorator instead of admin.site.register
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'body', 'post', 'created_on', 'active')
+    list_filter = ('active', 'created_on')
+    search_fields = ('name', 'email', 'body')
+    actions = ['approve_comments']
+
+    def approve_comments(self, request, queryset):
+        queryset.update(active=True)
 
 admin.site.register(BlogSeries)
 admin.site.register(BlogCategory)

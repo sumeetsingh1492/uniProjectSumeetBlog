@@ -1,20 +1,25 @@
 {% extends "main/header.html" %}
+{% load static %}
+
+{% block styles %}
+{% endblock %}
+
 
 {% block content %}
-  <div class="row">
+    <h2>Recent Posts</h2>
+    <div class="carousel">
+        {% for tut in blogs %}
+        <a class="carousel-item" href="/{{tut.blog_slug}}"><img src="{% static "main/images/stars.jpg"%}" alt="My image""></a>
+        {% endfor %}
+    </div>
   	{% for tut in blogs %}
-	    <div class="col s12 m6 l4">
-	      <div class="card blue-grey darken-1">
-	        <div class="card-content white-text">
-	          <span class="card-title">{{tut.blog_title}}</span>
-	          <p style="font-size:70%">{{tut.blog_published}}</p>
-	          <p>{{tut.blog_content|safe}}</p>
-	        </div>
-	        <div class="card-action">
-	          <a href="#">Visit</a>
-	        </div>
-	      </div>
-	    </div>
+  	    <div class="col s12, m8, l8">
+          <div class="divider"></div>
+              <h4><a href="/{{tut.blog_slug}}">{{ tut.blog_title }}</a></h3>
+              <p style="font-size:70%">Published {{tut.blog_published}}</p>
+              {{tut.blog_content|truncatechars:500|safe}}
+              <h6><a href="/{{tut.blog_slug}}">Read more...</a></h3>
+          </div>
+          <div class="divider"></div>
     {% endfor %}
-  </div>
 {% endblock %}
